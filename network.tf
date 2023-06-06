@@ -6,7 +6,7 @@ resource "vcd_vapp_network" "va_net" {
   prefix_length      = "24"
   dns1               = "192.168.2.1"
   dns2               = "192.168.2.2"
-  dns_suffix         = "20230605.involta.com"
+  dns_suffix         = "demo1.involta.com"
   guest_vlan_allowed = true
 
   # VCD 10.4.1+ API does not allow to remove vApp network from
