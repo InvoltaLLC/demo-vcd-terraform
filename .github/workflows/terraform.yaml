@@ -1,0 +1,40 @@
+name: "Run terraform apply"
+
+# triggers
+on:
+  push:
+    branches:
+      - dev
+      - qa
+      - prod
+  pull_request:
+    branches:
+      - dev
+      - qa
+      - prod
+
+jobs:
+  tfapply:
+    name: "Apply Configuration via Terraform"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v3
+
+      - name: "Configure Terraform"
+        env:
+          TF_CREDS: ${{ secrets.TF_API_TOKEN }}
+          TF_WORKSPACE: vcd-demo-${{ github.ref_name }}
+        run: |
+          sudo snap install terraform --classic
+
+          mkdir /home/runner/.terraform.d/
+          echo $TF_CREDS > /home/runner/.terraform.d/credentials.tfrc.json
+          echo Initializing with workspace $TF_WORKSPACE
+          terraform init
+
+      - name: "Apply Terraform"
+        env:
+          TF_WORKSPACE: vcd-demo-${{ github.ref_name }}
+        run: terraform apply --auto-approve
